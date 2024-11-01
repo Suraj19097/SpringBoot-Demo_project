@@ -4,7 +4,7 @@ phases:
   pre_build:
     commands:
       - echo Logging in to Amazon ECR...
-      - REPOSITORY_URI=312253715348.dkr.ecr.us-east-1.amazonaws.com/test-orde-repo
+      - REPOSITORY_URI=312253715348.dkr.ecr.us-east-1.amazonaws.com/springboot
       - aws --version
       - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $REPOSITORY_URI
       - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
