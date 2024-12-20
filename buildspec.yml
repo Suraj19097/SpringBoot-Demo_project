@@ -6,13 +6,14 @@ env:
     IMAGE_TAG: "latest"
     AWS_REGION: "us-east-1"       # Replace with your AWS region
     BUILD_VERSION: "1.0.0"        # Replace or override with the desired build version
-    DATE: "$(date +%Y%m%d)"       # Date in YYYYMMDD format
 
 phases:
   pre_build:
     commands:
       - echo "Logging in to Amazon ECR..."
       - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin 312253715348.dkr.ecr.$AWS_REGION.amazonaws.com
+      - echo "Generating dynamic date for versioning..."
+      - DATE=$(date +%Y%m%d)       # Generate the current date dynamically
       - echo "Installing dependencies and packaging the application..."
       - mvn clean package -DskipTests # Adjust the command based on your build tool
 
