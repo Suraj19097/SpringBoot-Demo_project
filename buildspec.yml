@@ -11,6 +11,8 @@ phases:
       - echo "Logging in to Amazon ECR..."
       - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 312253715348.dkr.ecr.us-east-1.amazonaws.com
       - echo "Installing dependencies and packaging the application..."
+      - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
+      - IMAGE_TAG=build-$CODEBUILD_BUILD_ID-$COMMIT_HASH  # Ensure valid characters only
       - mvn clean package -DskipTests # Adjust the command based on your build tool
 
   build:
