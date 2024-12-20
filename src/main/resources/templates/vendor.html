@@ -9,7 +9,7 @@
 <body>
 
 <div class="container">
-    <h1 class="mt-4">Cloud Vendor Management System</h1>
+    <h1 class="mt-4">Cloud Vendor Management </h1>
 
     <!-- Display success message -->
     <div th:if="${message}" class="alert alert-success">
@@ -17,10 +17,10 @@
     </div>
 
     <!-- Button to add a new vendor -->
-    <a href="/vendor/new" class="btn btn-primary mt-3">Add New Vendor for company</a>
+    <a href="/vendor/new" class="btn btn-primary mt-3">Add New Vendor </a>
 
     <!-- List of vendors -->
-    <h2 class="mt-4">Existing Vendors</h2>
+    <h2 class="mt-4">show Existing Vendors</h2>
     <div th:each="vendor : ${vendors}">
         <div class="card mt-2">
             <div class="card-body">
