@@ -32,11 +32,11 @@ phases:
       - echo "Creating imagedefinitions.json file..."
       - IMAGE_URI="312253715348.dkr.ecr.$AWS_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG_VERSIONED"
       - echo "[{\"name\":\"Application\",\"imageUri\":\"$IMAGE_URI\"}]" > imagedefinitions.json
-      - echo "imagedefinitions.json created with image URI: $IMAGE_URI"
+      - echo "imagedefinitions.json created with image URI:$IMAGE_URI"
       - echo "Uploading the build artifact (JAR file) to S3..."
       - S3_PATH="s3://cloud-vendor-artifact/cloud-vendor/$DATE/$BUILD_VERSION/"
       - aws s3 cp target/*.jar $S3_PATH
-      - echo "Build artifacts uploaded to S3: $S3_PATH"
+      - echo "Build artifacts uploaded to S3:$S3_PATH"
       - echo "Build completed successfully!"
 
 artifacts:
