@@ -24,6 +24,9 @@ phases:
 
   post_build:
     commands:
+      - echo "Creating imagedefinitions.json file..."
+      - printf '[{"name":"Application","imageUri":"%s"}]' 312253715348.dkr.ecr.us-east-1.amazonaws.com/surajfirst:latest > imagedefinitions.json
+      - echo "imagedefinitions.json created."
       - echo "Uploading the build artifact (JAR file) to S3..."
       - aws s3 cp target/*.jar s3://cloud-vendor-artifact/cloud-vendor/ # Replace with your S3 bucket name and key prefix
       - echo "Build completed successfully!"
@@ -31,4 +34,5 @@ phases:
 artifacts:
   files:
     - target/*.jar
+    - imagedefinitions.json
   discard-paths: yes
