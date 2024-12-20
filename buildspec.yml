@@ -35,13 +35,13 @@ phases:
       - echo "imagedefinitions.json created with image URI:$IMAGE_URI"
 
       # Update ECS service to use the latest image without creating a new revision
-      - echo "Updating ECS service with new image..."
-      - ECS_SERVICE_NAME=first_service  # Replace with your ECS service name
-      - ECS_CLUSTER_NAME=Suraj_cluster_fargate # Replace with your ECS cluster name
-      - TASK_DEFINITION_ARN=$(aws ecs describe-services --cluster $ECS_CLUSTER_NAME --services $ECS_SERVICE_NAME --query 'services[0].taskDefinition' --output text)
+      #- echo "Updating ECS service with new image..."
+      #- ECS_SERVICE_NAME=first_service  # Replace with your ECS service name
+      #- ECS_CLUSTER_NAME=Suraj_cluster_fargate # Replace with your ECS cluster name
+      #- TASK_DEFINITION_ARN=$(aws ecs describe-services --cluster $ECS_CLUSTER_NAME --services $ECS_SERVICE_NAME --query 'services[0].taskDefinition' --output text)
       
       # Update the ECS service with the new image URI without registering a new task definition
-      - aws ecs update-service --cluster $ECS_CLUSTER_NAME --service $ECS_SERVICE_NAME --task-definition $TASK_DEFINITION_ARN --force-new-deployment --region $AWS_REGION
+      #- aws ecs update-service --cluster $ECS_CLUSTER_NAME --service $ECS_SERVICE_NAME --task-definition $TASK_DEFINITION_ARN --force-new-deployment --region $AWS_REGION
       
       - echo "Uploading the build artifact (JAR file) to S3..."
       - S3_PATH="s3://cloud-vendor-artifact/cloud-vendor/$DATE/$BUILD_VERSION/"
