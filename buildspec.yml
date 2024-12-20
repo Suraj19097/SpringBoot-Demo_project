@@ -4,31 +4,37 @@ env:
   variables:
     IMAGE_REPO_NAME: "surajfirst" # Replace with your ECR repository name
     IMAGE_TAG: "latest"
+    AWS_REGION: "us-east-1"       # Replace with your AWS region
+    BUILD_VERSION: "1.0.0"        # Replace or override with the desired build version
+    DATE: "$(date +%Y%m%d)"       # Date in YYYYMMDD format
 
 phases:
   pre_build:
     commands:
       - echo "Logging in to Amazon ECR..."
-      - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 312253715348.dkr.ecr.us-east-1.amazonaws.com
+      - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin 312253715348.dkr.ecr.$AWS_REGION.amazonaws.com
       - echo "Installing dependencies and packaging the application..."
       - mvn clean package -DskipTests # Adjust the command based on your build tool
 
   build:
     commands:
       - echo "Building the Docker image..."
-      - docker build -t $IMAGE_REPO_NAME:$IMAGE_TAG .
+      - IMAGE_TAG_VERSIONED="$IMAGE_TAG-$DATE-$BUILD_VERSION"
+      - docker build -t $IMAGE_REPO_NAME:$IMAGE_TAG_VERSIONED .
       - echo "Tagging the Docker image..."
-      - docker tag $IMAGE_REPO_NAME:$IMAGE_TAG 312253715348.dkr.ecr.us-east-1.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
+      - docker tag $IMAGE_REPO_NAME:$IMAGE_TAG_VERSIONED 312253715348.dkr.ecr.$AWS_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG_VERSIONED
       - echo "Pushing the Docker image to Amazon ECR..."
-      - docker push 312253715348.dkr.ecr.us-east-1.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
+      - docker push 312253715348.dkr.ecr.$AWS_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG_VERSIONED
 
   post_build:
     commands:
       - echo "Creating imagedefinitions.json file..."
-      - printf '[{"name":"Application","imageUri":"%s"}]' 312253715348.dkr.ecr.us-east-1.amazonaws.com/surajfirst:latest > imagedefinitions.json
+      - printf '[{"name":"Application","imageUri":"%s"}]' 312253715348.dkr.ecr.$AWS_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG_VERSIONED > imagedefinitions.json
       - echo "imagedefinitions.json created."
       - echo "Uploading the build artifact (JAR file) to S3..."
-      - aws s3 cp target/*.jar s3://cloud-vendor-artifact/cloud-vendor/ # Replace with your S3 bucket name and key prefix
+      - S3_PATH="s3://cloud-vendor-artifact/cloud-vendor/$DATE/$BUILD_VERSION/"
+      - aws s3 cp target/*.jar $S3_PATH
+      - echo "Build artifacts uploaded to S3: $S3_PATH"
       - echo "Build completed successfully!"
 
 artifacts:
